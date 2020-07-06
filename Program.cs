@@ -12,29 +12,32 @@ namespace SD_29_BusDriversGossips
             int nbOfDrivers = AskHowManyDrivers();
             List<BusDriver> drivers = SetRoutesForEm(nbOfDrivers);
             Introduction();
-            IntroduceDriversToUser(drivers);
             (int minutes, List<BusDriver> drivers) answer = SimulateShift(drivers);
             GiveAnswer(answer.minutes);
-            IntroduceDriversToUser(answer.drivers);
         }
 
         private static void Introduction()
         {
             Console.Clear(); Console.WriteLine("\tAt the beginning all drivers know only one gossip: ");
-            Console.WriteLine("And pick ups more while encountering other drivers at the same bus stops. They share gossips until...");
-        }
-
-        private static void IntroduceDriversToUser(List<BusDriver> drivers)
-        {
-            drivers.ForEach(x => { Console.WriteLine(); Console.WriteLine(x.ToString()); });
+            Console.WriteLine("And pick ups more while encountering other drivers at the same bus stops. They share gossips until each knows every gossip. It will happen...");
         }
 
         private static void GiveAnswer(int answer)
         {
             if (answer > -1)
-                Console.WriteLine($"\n\n\tEvery driver already know every gossip just after passing {answer+1} stops.\n");
+            {
+                Console.Write($"\tWith this butch they already know every gossip just after passing ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"{ answer + 1}");
+                Console.ResetColor();
+                Console.WriteLine(" stops.");
+            }
             else
-                Console.WriteLine("\n\n\tNEVER");
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("\tNEVER.");
+                Console.ResetColor();
+            }
         }
 
 
@@ -44,23 +47,12 @@ namespace SD_29_BusDriversGossips
 
             for (int i = 0; i < 420; i++)
             {
-                Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!" + i + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
                 stops.Clear();
 
                 drivers.ForEach(x =>
                 {
                     stops.Add(x.Route[i]);
                 });
-
-                if (i == 0)
-                {
-                    drivers.ForEach(x =>
-                    {
-                        Console.WriteLine("count="+x.Route.Count);
-
-                    });
-                }
 
                 for (int oneDriver = 0; oneDriver < stops.Count; oneDriver++)
                 {
@@ -71,8 +63,6 @@ namespace SD_29_BusDriversGossips
                             if (stops[oneDriver] == stops[anotherDriver])
                             {
                                 ShareGossip(drivers, oneDriver, anotherDriver);
-
-                                //IntroduceDriversToUser(drivers);
 
                                 bool allKnowEverything = true;
                                 for (int o = 0; o < drivers.Count; o++)
@@ -89,18 +79,20 @@ namespace SD_29_BusDriversGossips
 
                                 if (allKnowEverything)
                                 {
+
+
                                     return (i, drivers);
                                 }
-                                else
-                                    Console.WriteLine($"driver {oneDriver} meets driver {anotherDriver} on stops nb:{stops[oneDriver]}");
                             }
-
                         }
                     }
                 }
             }
+
+
             return (-1, drivers);
         }
+
 
         private static void ShareGossip(List<BusDriver> drivers, int one, int another)
         {
@@ -118,6 +110,7 @@ namespace SD_29_BusDriversGossips
             }
         }
 
+
         private static List<BusDriver> SetRoutesForEm(int nbOfDrivers)
         {
             List<BusDriver> drivers = new List<BusDriver>();
@@ -128,7 +121,7 @@ namespace SD_29_BusDriversGossips
                 do
                 {
                     Console.Clear();
-                    Console.WriteLine(i + "Put stops numbers, divided by space, in a sequence the bus will be passing:");
+                    Console.WriteLine("Put stops numbers, divided by space, in a sequence the bus will be passing:");
 
                     intted.Clear();
                     string _userInput = Console.ReadLine();
